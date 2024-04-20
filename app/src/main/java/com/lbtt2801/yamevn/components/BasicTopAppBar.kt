@@ -1,4 +1,4 @@
-package com.lbtt2801.yamevn.components.app
+package com.lbtt2801.yamevn.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

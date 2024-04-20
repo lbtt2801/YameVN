@@ -1,4 +1,4 @@
-package com.lbtt2801.yamevn.components.listProduct
+package com.lbtt2801.yamevn.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lbtt2801.yamevn.components.ImageCustom
-import com.lbtt2801.yamevn.components.product.ProductContent
+import com.lbtt2801.yamevn.components.ProductContent
 
 @Composable
 fun ListProduct() {
