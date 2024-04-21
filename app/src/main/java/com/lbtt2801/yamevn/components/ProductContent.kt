@@ -1,4 +1,4 @@
-package com.lbtt2801.yamevn.components.product
+package com.lbtt2801.yamevn.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

@@ -17,8 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lbtt2801.yamevn.components.app.BasicTopAppBar
-import com.lbtt2801.yamevn.components.listProduct.ListProduct
+import com.lbtt2801.yamevn.components.BasicTopAppBar
+import com.lbtt2801.yamevn.components.ListProduct
 
 @Preview(showBackground = true, device = Devices.PIXEL_4_XL)
 @Composable
