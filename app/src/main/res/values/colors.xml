@@ -9,9 +9,11 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="Color_EE4266">#EE4266</color>
-    <color name="Color_111">#111</color>
+    <color name="Color_120D26">#120D26</color>
+    <color name="Color_222">#222</color>
     <color name="Color_DEE2E6">#DEE2E6</color>
     <color name="Color_212529">#212529</color>
     <color name="Color_FF0000">#FF0000</color>
-    <color name="Color_FEFEFE">#FEFEFE</color>
+    <color name="Color_D0D0D0">#D0D0D0</color>
+    <color name="Color_F3F3F3">#F3F3F3</color>
 </resources>

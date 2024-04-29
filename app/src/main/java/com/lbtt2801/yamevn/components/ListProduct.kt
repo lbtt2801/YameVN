@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lbtt2801.yamevn.components.ProductContent
+import androidx.navigation.NavController
 
 @Composable
-fun ListProduct() {
+fun ListProduct(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,12 +45,12 @@ fun ListProduct() {
             )
         )
         val data: List<Int> = listOf(1, 2, 3, 4, 5, 6)
-        ViewGirdListProduct(items = data)
+        ViewGirdListProduct(items = data, navController = navController)
     }
 }
 
 @Composable
-fun ViewGirdListProduct(items: List<Int>) {
+fun ViewGirdListProduct(navController: NavController, items: List<Int>) {
     val columns = 2 // mặc định 2 cột -> 3 hàng
     val rows = items.chunked(columns)
 
@@ -69,6 +69,7 @@ fun ViewGirdListProduct(items: List<Int>) {
                             "https://cdn2.yame.vn/pimg/tui-eo-daily-y-nguyen-ban-m1-0022279/4307c03d-edc0-4900-e260-001ad5b7355c.jpg"
                         )
                         ProductContent(
+                            navController = navController,
                             images = images,
                             price = (100..210).random(),
                             priceSale = (0..110).random()
@@ -78,10 +79,4 @@ fun ViewGirdListProduct(items: List<Int>) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, device = Devices.PIXEL_4_XL)
-@Composable
-fun PreviewListProduct() {
-    ListProduct()
 }

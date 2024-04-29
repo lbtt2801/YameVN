@@ -3,7 +3,6 @@ package com.lbtt2801.yamevn.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -22,12 +21,13 @@ import com.lbtt2801.yamevn.R
 
 @Composable
 fun IconTextButton(
+    modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Default.AddCircle,
     text: String = "Chọn mua",
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {

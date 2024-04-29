@@ -24,10 +24,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
+import com.lbtt2801.yamevn.navigation.Screens
 
 @Composable
 fun BasicTopAppBar(
+    navController: NavController,
     modifier: Modifier = Modifier,
     title: String = "",
     isShowLogo: Boolean? = false,
@@ -53,7 +56,7 @@ fun BasicTopAppBar(
                 contentDescription = "logo",
                 modifier = Modifier
                     .width(145.dp)
-                    .height(50.dp),
+                    .height(50.dp).clickable { navController.popBackStack(Screens.Home.route, false) },
                 contentScale = ContentScale.FillWidth
             )
         }
@@ -87,7 +90,8 @@ fun BasicTopAppBar(
                     contentDescription = "search icon",
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable { onSearchIconClicked() }.padding(end = 10.dp),
+                        .clickable { onSearchIconClicked() }
+                        .padding(end = 10.dp),
                     tint = Color.White
                 )
             }
@@ -98,7 +102,8 @@ fun BasicTopAppBar(
                     contentDescription = "cart icon",
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable { onCartIconClicked() }.padding(end = 10.dp),
+                        .clickable { onCartIconClicked() }
+                        .padding(end = 10.dp),
                     tint = Color.White
                 )
             }

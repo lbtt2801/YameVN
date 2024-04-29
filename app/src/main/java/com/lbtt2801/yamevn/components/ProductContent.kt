@@ -2,6 +2,7 @@ package com.lbtt2801.yamevn.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.lbtt2801.yamevn.components.ImageCustom
+import androidx.navigation.NavController
+import com.lbtt2801.yamevn.navigation.Screens
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductContent(
+    navController: NavController,
     id: Int? = null,
     images: List<String>,
     price: Int = 0,
@@ -41,9 +44,7 @@ fun ProductContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-//            .fillMaxWidth(.4f)
-//            .fillMaxHeight(.3f)
-//            .padding(all = 15.dp)
+            .clickable { navController.navigate(Screens.DetailProduct.route) }
     ) {
 
         Box(
