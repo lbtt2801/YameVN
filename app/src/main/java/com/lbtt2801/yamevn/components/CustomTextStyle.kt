@@ -25,4 +25,12 @@ object CustomTextStyle {
             fontWeight = FontWeight(400),
             color = Color.Black.copy(alpha = 0.5f),
         )
+
+    val text_12_400_212529
+        @Composable
+        get() = TextStyle(
+            fontWeight = FontWeight(400),
+            color = colorResource(id = R.color.Color_212529),
+            fontSize = 12.sp
+        )
 }
