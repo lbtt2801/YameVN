@@ -1,4 +1,4 @@
-package com.lbtt2801.yamevn.components
+package com.lbtt2801.yamevn.components.appbar
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +35,7 @@ fun BasicTopAppBar(
     navController: NavController,
     modifier: Modifier = Modifier,
     title: String = "",
+    sizeCart: Int = 0,
     isShowLogo: Boolean? = false,
     @DrawableRes navIcon: Int? = null,
     @DrawableRes searchIcon: Int? = R.drawable.ic_search,
@@ -47,8 +50,8 @@ fun BasicTopAppBar(
         modifier = modifier
             .background(Color.Black)
             .fillMaxWidth()
+            .height(50.dp)
             .padding(horizontal = 12.dp)
-
     ) {
         if (isShowLogo == true) {
             Image(
@@ -56,7 +59,8 @@ fun BasicTopAppBar(
                 contentDescription = "logo",
                 modifier = Modifier
                     .width(145.dp)
-                    .height(50.dp).clickable { navController.popBackStack(Screens.Home.route, false) },
+                    .height(50.dp)
+                    .clickable { navController.popBackStack(Screens.Home.route, false) },
                 contentScale = ContentScale.FillWidth
             )
         }
@@ -67,15 +71,15 @@ fun BasicTopAppBar(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .clickable { onNavIconClicked() },
-//                tint = colorResource(R.color.Color_11161D)
+                tint = Color.White
             )
         }
         Text(
             text = title,
             modifier = Modifier.align(Alignment.Center),
             style = TextStyle(
-                fontSize = 24.sp,
-//                    color = colorResource(R.color.Color_11161D),
+                fontSize = 20.sp,
+                color = Color.White,
                 textAlign = TextAlign.Center
             )
         )
@@ -97,15 +101,30 @@ fun BasicTopAppBar(
             }
 
             cartIcon?.let {
-                Icon(
-                    painter = painterResource(it),
-                    contentDescription = "cart icon",
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable { onCartIconClicked() }
-                        .padding(end = 10.dp),
-                    tint = Color.White
-                )
+                Box {
+                    Icon(
+                        painter = painterResource(it),
+                        contentDescription = "cart icon",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable { onCartIconClicked() }
+                            .padding(end = 10.dp),
+                        tint = Color.White
+                    )
+                    if (sizeCart > 0) {
+                        Badge(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(end = 5.dp)
+                        ) {
+                            Text(
+                                text = sizeCart.toString(),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
             }
 
             profileIcon?.let {

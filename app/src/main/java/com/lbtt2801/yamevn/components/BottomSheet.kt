@@ -1,9 +1,7 @@
 package com.lbtt2801.yamevn.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,21 +24,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
+import com.lbtt2801.yamevn.navigation.Screens
+import com.lbtt2801.yamevn.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheet(content: @Composable () -> Unit) {
+fun BottomSheet(
+    navController: NavController,
+    viewModel: MainViewModel? = null,
+    content: @Composable () -> Unit
+) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -64,8 +67,8 @@ fun BottomSheet(content: @Composable () -> Unit) {
 
     LaunchedEffect(modalBottomSheetState.isVisible) {
         if (!modalBottomSheetState.isVisible) {
-            selectTabOne.value = false;
-            selectTabTwo.value = false;
+            selectTabOne.value = false
+            selectTabTwo.value = false
         }
     }
 
@@ -91,7 +94,7 @@ fun BottomSheet(content: @Composable () -> Unit) {
                         .clickable {
                             scope.launch {
                                 selectTabOne.value = !selectTabOne.value
-                                selectTabTwo.value = false;
+                                selectTabTwo.value = false
                                 if (modalBottomSheetState.isVisible && !selectTabOne.value) {
                                     modalBottomSheetState.hide()
                                 } else if (selectTabOne.value) {
@@ -164,7 +167,15 @@ fun BottomSheet(content: @Composable () -> Unit) {
                     Text(
                         text = item.uppercase(),
                         style = contentStyle,
-                        modifier = Modifier.padding(start = 15.dp, top=10.dp, bottom = 0.dp)
+                        modifier = Modifier
+                            .padding(start = 15.dp, top = 10.dp, bottom = 0.dp)
+                            .clickable {
+                                scope.launch {
+                                    viewModel?.titleHeader = item
+                                    modalBottomSheetState.hide()
+                                    navController.navigate(Screens.Category.route)
+                                }
+                            }
                     )
                 }
             }

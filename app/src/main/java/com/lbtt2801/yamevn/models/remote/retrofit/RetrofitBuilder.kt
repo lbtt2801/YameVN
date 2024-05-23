@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitBuilder {
 
-    private const val BASE_URL_PROVINCES = "http://192.168.88.240/provinces/" //"https://cntt199.000webhostapp.com/api/"
+    private const val BASE_URL_PROVINCES = "http://192.168.88.57/provinces/" //"https://cntt199.000webhostapp.com/api/"
 
     private val gson by lazy {
         Gson()

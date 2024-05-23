@@ -18,7 +18,12 @@ import androidx.compose.ui.unit.sp
 import com.lbtt2801.yamevn.R
 
 @Composable
-fun RowSizeProduct(color: String = "Đen", size: String = "S", quantity: Int = 30) {
+fun RowSizeProduct(
+    color: String = "Đen",
+    size: String = "S",
+    quantity: Int = 30,
+    onAddToCart: () -> Unit = {},
+) {
     val textStyle = TextStyle(
         color = colorResource(id = R.color.Color_212529),
         fontSize = 16.sp
@@ -47,7 +52,7 @@ fun RowSizeProduct(color: String = "Đen", size: String = "S", quantity: Int = 3
                 color = if (quantity <= 0) Color.Red else colorResource(id = R.color.Color_212529)
             )
         )
-        IconTextButton(onClick = {})
+        IconTextButton(onClick = { onAddToCart() })
     }
 
     Divider(

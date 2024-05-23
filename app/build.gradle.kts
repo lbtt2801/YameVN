@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -20,6 +22,11 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude("META-INF/INDEX.LIST")
+        exclude("META-INF/DEPENDENCIES")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -30,11 +37,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -49,19 +56,23 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.13.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
+    implementation("androidx.activity:activity-compose:1.7.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.animation:animation-core:1.6.6")
-    implementation ("androidx.compose.ui:ui:1.6.6")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    implementation ("androidx.compose.material:material:1.6.6")
+    implementation("androidx.compose.ui:ui:1.6.6")
+    implementation(platform("androidx.compose:compose-bom:2023.01.00"))
+    implementation("androidx.compose.material:material:1.6.6")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -71,24 +82,41 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     // Navigation
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Firebase
+    implementation("com.google.firebase:firebase-auth:21.1.0")
+    implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
+    implementation("com.google.android.gms:play-services-auth:20.4.1")
+    implementation("com.google.firebase:firebase-bom:22.0.0")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation ("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3:1.2.1")
 
-    //lifecycle livedata
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.6")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    // lifecycle livedata
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
-    //Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.2")
-    implementation ("com.squareup:otto:1.3.8")
-    implementation ("com.squareup.retrofit2:adapter-rxjava2:2.3.0")
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.2")
+    implementation("com.squareup:otto:1.3.8")
+    implementation("com.squareup.retrofit2:adapter-rxjava2:2.3.0")
 
-    //Splash Screen
+    // Splash Screen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // AI
+    implementation("com.google.cloud:google-cloud-dialogflow:2.4.0")
+
+    // Room
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    // One-Tap Sign in with Google
+    implementation("com.github.stevdza-san:OneTapCompose:1.0.12")
 }

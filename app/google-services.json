@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "74921199881",
+    "project_id": "yamevn-1a052",
+    "storage_bucket": "yamevn-1a052.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74921199881:android:a362e748bd8a63af1b6bd8",
+        "android_client_info": {
+          "package_name": "com.lbtt2801.yamevn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74921199881-7uj16nimu8njjt7rtskvtc61fc91f73v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lbtt2801.yamevn",
+            "certificate_hash": "285f27fa1614ead44013ff6b0131cf0a9081fd33"
+          }
+        },
+        {
+          "client_id": "74921199881-c733mit84a71dr2nhfjkkmp2hv2bibpr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlni5HE9TZdZqCMTs6PBotQ3uQsfr9pco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74921199881-c733mit84a71dr2nhfjkkmp2hv2bibpr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
