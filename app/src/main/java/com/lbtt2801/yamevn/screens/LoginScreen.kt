@@ -1,9 +1,5 @@
 package com.lbtt2801.yamevn.screens
 
-import android.app.Activity
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,13 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -43,61 +37,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.lbtt2801.yamevn.R
 import com.lbtt2801.yamevn.components.ButtonSign
 import com.lbtt2801.yamevn.components.CustomTextStyle
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
 import com.lbtt2801.yamevn.navigation.Screens
-import com.stevdzasan.onetap.GoogleUser
-import com.stevdzasan.onetap.rememberOneTapSignInState
-
-private fun handleSignInResult(
-    completedTask: Task<GoogleSignInAccount>,
-    onResult: (GoogleSignInAccount?) -> Unit
-) {
-    try {
-        val account = completedTask.getResult(ApiException::class.java)
-        onResult(account)
-    } catch (e: ApiException) {
-        Log.e("GoogleSignInScreen", "Sign in failed with exception: ${e.statusCode}")
-        onResult(null)
-    }
-}
 
 @Composable
-//fun LoginScreen(navController: NavController, googleSignInClient: GoogleSignInClient)
 fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var save by rememberSaveable { mutableStateOf(false) }
-
-//    val state = rememberOneTapSignInState()
-//    var user: GoogleUser? by remember { mutableStateOf(null) }
-
-    var user by remember { mutableStateOf<GoogleSignInAccount?>(null) }
-    val context = LocalContext.current
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            handleSignInResult(task) {
-                user = it
-                user?.displayName?.let { it1 -> Log.e("GoogleSignInScreen", it1) }
-            }
-        } else {
-            Log.e("GoogleSignInScreen", "Sign in failed with resultCode: ${result.resultCode}")
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -192,11 +144,11 @@ fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
                     )
                 },
                 trailingIcon = {
-                    val icon = if (passwordVisible)
+                    val icon = if (passwordVisible.not())
                         painterResource(id = R.drawable.ic_eye)
                     else painterResource(id = R.drawable.ic_disable_eye)
                     val description =
-                        if (passwordVisible) "Hide password" else "Show password"
+                        if (passwordVisible.not()) "Hide password" else "Show password"
                     Icon(
                         painter = icon,
                         contentDescription = description,
@@ -246,32 +198,12 @@ fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
 
             ButtonSign(
                 onClick = {
-//                    val signInIntent = googleSignInClient.signInIntent
-//                    launcher.launch(signInIntent)
                     onGoogleSignIn()
                 },
                 isButtonSign = false,
                 text = "Đăng nhập với Google",
                 color = Color.White,
             )
-
-//        OneTapGoogleButton(
-//            clientId = "74921199881-c733mit84a71dr2nhfjkkmp2hv2bibpr.apps.googleusercontent.com",
-////            onClick = { state.open() },
-//        )
-
-//        OneTapSignInWithGoogle(
-//            state = state,
-//            clientId = stringResource(id = R.string.web_client_id),
-//            rememberAccount = false,
-//            onTokenIdReceived = {
-//                user = getUserFromTokenId(tokenId = it)
-//                Log.d("MainActivity", user.toString())
-//            },
-//            onDialogDismissed = {
-//                Log.d("MainActivity", it)
-//            }
-//        )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -1,26 +1,20 @@
 package com.lbtt2801.yamevn.viewmodels
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.lbtt2801.yamevn.models.ProductCart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val _isReady = MutableStateFlow(false)
-    val isReady = _isReady.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            delay(3000L)
-            _isReady.value = true
-        }
-    }
-
     var cartItems = mutableStateListOf<ProductCart>()
     var paymentItems = mutableStateListOf<ProductCart>()
 
@@ -53,6 +47,25 @@ class MainViewModel : ViewModel() {
     }
 
     var titleHeader = mutableStateListOf<String>("Title Header")
-    var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    val isLogin: MutableState<Boolean> = mutableStateOf(FirebaseAuth.getInstance().currentUser != null)
+
+    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    fun signOut() {
+        firebaseAuth.signOut()
+        isLogin.value = false
+    }
+
+    fun signIn(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                isLogin.value = true
+            } else {
+                // Handle sign-in failure
+            }
+        }
+    }
 
 }

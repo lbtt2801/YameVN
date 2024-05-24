@@ -29,14 +29,14 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
-import com.lbtt2801.yamevn.components.BottomSheet
 import com.lbtt2801.yamevn.components.CustomTextStyle
+import com.lbtt2801.yamevn.components.ImageCustom
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
 import com.lbtt2801.yamevn.navigation.Screens
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
 
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(navController: NavController, onLogout: () -> Unit) {
     val viewModel: MainViewModel = viewModel()
 
     Scaffold(
@@ -72,17 +72,27 @@ fun ProfileScreen(navController: NavController) {
                     .padding(all = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.img_avatar),
-                    contentDescription = "Avatar",
+//                Image(
+//                    painter = painterResource(id = R.drawable.img_avatar),
+//                    contentDescription = "Avatar",
+//                    modifier = Modifier
+//                        .padding(end = 10.dp)
+//                        .size(60.dp)
+//                )
+                ImageCustom(
+                    imageData = viewModel.firebaseAuth.currentUser?.photoUrl
+                        ?: painterResource(id = R.drawable.img_avatar),
                     modifier = Modifier
                         .padding(end = 10.dp)
                         .size(60.dp)
                 )
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Name user", style = CustomTextStyle.textStyle)
                     Text(
-                        text = "Email user @gmail.com",
+                        text = viewModel.firebaseAuth.currentUser?.displayName ?: "Name user",
+                        style = CustomTextStyle.textStyle
+                    )
+                    Text(
+                        text = viewModel.firebaseAuth.currentUser?.email ?: "Email user @gmail.com",
                         style = CustomTextStyle.placeholderStyle
                     )
                 }
@@ -168,7 +178,10 @@ fun ProfileScreen(navController: NavController) {
             ItemAccount(
                 "Đăng xuất",
                 icon = R.drawable.ic_logout,
-                onClick = { viewModel.firebaseAuth.signOut() }
+                onClick = {
+                    navController.popBackStack()
+                    onLogout()
+                }
             )
         }
     }
@@ -209,7 +222,8 @@ fun ItemAccount(text: String, icon: Int, onClick: () -> Unit = {}) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painterResource(id = icon),
-                    contentDescription = "Icon $text"
+                    contentDescription = "Icon $text",
+                    modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(text = text, style = CustomTextStyle.textStyle)

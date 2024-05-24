@@ -114,18 +114,6 @@ fun RegisterScreen(navController: NavController) {
                 .padding(top = 65.dp, start = 12.dp, end = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//        Text(
-//            modifier = Modifier
-//                .padding(bottom = 5.dp)
-//                .align(Alignment.Start),
-//            text = "Đăng Kí",
-//            style = TextStyle(
-//                fontSize = 24.sp,
-//                fontWeight = FontWeight(700),
-//                color = Color.Black
-//            )
-//        )
-
             OutlinedTextField(
                 isError = isButtonClicked && name.isEmpty(),
                 modifier = Modifier.fillMaxWidth(),
@@ -213,11 +201,11 @@ fun RegisterScreen(navController: NavController) {
                     )
                 },
                 trailingIcon = {
-                    val icon = if (passwordVisible)
+                    val icon = if (passwordVisible.not())
                         painterResource(id = R.drawable.ic_eye)
                     else painterResource(id = R.drawable.ic_disable_eye)
                     val description =
-                        if (passwordVisible) "Hide password" else "Show password"
+                        if (passwordVisible.not()) "Hide password" else "Show password"
                     Icon(
                         painter = icon,
                         contentDescription = description,

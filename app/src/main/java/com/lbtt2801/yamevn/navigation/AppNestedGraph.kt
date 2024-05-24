@@ -16,7 +16,8 @@ import com.lbtt2801.yamevn.viewmodels.SearchViewModel
 fun NavGraphBuilder.appGraph(
     navController: NavController,
     searchViewModel: SearchViewModel,
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    onLogout: () -> Unit,
 ) {
     navigation(startDestination = Screens.Home.route, route = Screens.AppRoute.route) {
         composable(route = Screens.Home.route) {
@@ -34,7 +35,7 @@ fun NavGraphBuilder.appGraph(
             )
         }
         composable(route = Screens.Profile.route) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, onLogout = onLogout)
         }
         composable(route = Screens.Cart.route) {
             CartScreen(navController = navController, viewModel = viewModel)

@@ -89,11 +89,11 @@ fun ChangePasswordScreen(navController: NavController) {
                             )
                         },
                         trailingIcon = {
-                            val icon = if (passwordVisible)
+                            val icon = if (passwordVisible.not())
                                 painterResource(id = R.drawable.ic_eye)
                             else painterResource(id = R.drawable.ic_disable_eye)
                             val description =
-                                if (passwordVisible) "Hide password" else "Show password"
+                                if (passwordVisible.not()) "Hide password" else "Show password"
                             Icon(
                                 painter = icon,
                                 contentDescription = description,
@@ -148,11 +148,11 @@ fun ChangePasswordScreen(navController: NavController) {
                             )
                         },
                         trailingIcon = {
-                            val icon = if (passwordNewVisible)
+                            val icon = if (passwordNewVisible.not())
                                 painterResource(id = R.drawable.ic_eye)
                             else painterResource(id = R.drawable.ic_disable_eye)
                             val description =
-                                if (passwordNewVisible) "Hide password" else "Show password"
+                                if (passwordNewVisible.not()) "Hide password" else "Show password"
                             Icon(
                                 painter = icon,
                                 contentDescription = description,
@@ -185,11 +185,11 @@ fun ChangePasswordScreen(navController: NavController) {
                             )
                         },
                         trailingIcon = {
-                            val icon = if (repassNewVisible)
+                            val icon = if (repassNewVisible.not())
                                 painterResource(id = R.drawable.ic_eye)
                             else painterResource(id = R.drawable.ic_disable_eye)
                             val description =
-                                if (repassNewVisible) "Hide password" else "Show password"
+                                if (repassNewVisible.not()) "Hide password" else "Show password"
                             Icon(
                                 painter = icon,
                                 contentDescription = description,

@@ -13,7 +13,7 @@ object CustomTextStyle {
     val textStyle
         @Composable
         get() = TextStyle(
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             color = colorResource(
                 id = R.color.Color_120D26
             )

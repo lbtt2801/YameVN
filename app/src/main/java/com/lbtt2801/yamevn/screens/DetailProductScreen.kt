@@ -182,173 +182,171 @@ fun DetailProductScreen(
                 },
             )
         },
-        bottomBar = {
-            BottomSheet(navController = navController, viewModel = viewModel) {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .padding(top = 50.dp, bottom = 12.dp, start = 12.dp, end = 12.dp)
-                ) {
-                    val pagerState = rememberPagerState(pageCount = { images.size })
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues = paddingValues)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .background(Color.White)
+                .padding(top = 50.dp, bottom = 12.dp, start = 12.dp, end = 12.dp)
+        ) {
+            val pagerState = rememberPagerState(pageCount = { images.size })
 
-                    HorizontalPager(
-                        state = pagerState, contentPadding = PaddingValues(horizontal = 50.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) { page ->
-                        Card(
-                            Modifier
-                                .graphicsLayer {
-                                    val pageOffset = (
-                                            (pagerState.currentPage - page) + pagerState
-                                                .currentPageOffsetFraction
-                                            ).absoluteValue
+            HorizontalPager(
+                state = pagerState, contentPadding = PaddingValues(horizontal = 50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) { page ->
+                Card(
+                    Modifier
+                        .graphicsLayer {
+                            val pageOffset = (
+                                    (pagerState.currentPage - page) + pagerState
+                                        .currentPageOffsetFraction
+                                    ).absoluteValue
 
-                                    lerp(
-                                        start = 0.85f,
-                                        stop = 1f,
-                                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                    ).also { scale ->
-                                        scaleX = scale
-                                        scaleY = scale
-                                    }
-
-                                    alpha = lerp(
-                                        start = 0.5f,
-                                        stop = 1f,
-                                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                    )
-                                }
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .clickable {
-                                        showImageDialog.value =
-                                            !showImageDialog.value; index.value = page
-                                    }
-                                    .fillMaxSize()
-                                    .background(colorResource(id = R.color.Color_F3F3F3)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                ImageCustom(
-                                    imageData = images[page],
-                                    contentScale = ContentScale.FillHeight
-                                )
+                            lerp(
+                                start = 0.85f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            ).also { scale ->
+                                scaleX = scale
+                                scaleY = scale
                             }
-                        }
-                    }
 
-                    Text(
-                        text = "Áo Thun Cổ Tròn 3 Lỗ Sợi Nhân Tạo Thoáng Mát Trơn Dáng Vừa Thể Thao Beginner 03",
-                        style = TextStyle(
-                            fontWeight = FontWeight(400),
-                            fontSize = 18.sp,
-                            color = colorResource(
-                                id = R.color.Color_120D26
+                            alpha = lerp(
+                                start = 0.5f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
                             )
-                        ),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 20.dp)
-                    )
-
-                    Row(
+                        }
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                ) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                            .clickable {
+                                showImageDialog.value =
+                                    !showImageDialog.value; index.value = page
+                            }
+                            .fillMaxSize()
+                            .background(colorResource(id = R.color.Color_F3F3F3)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "Mã số: #00022873",
-                            style = TextStyle(
-                                fontWeight = FontWeight(400),
-                                fontSize = 16.sp,
-                                color = colorResource(
-                                    id = R.color.Color_120D26
-                                )
-                            )
-                        )
-
-                        RatingRow()
-                    }
-
-                    Text(
-                        modifier = Modifier.padding(vertical = 20.dp),
-                        text = "287.000 đ",
-                        style = TextStyle(
-                            fontWeight = FontWeight(600),
-                            fontSize = 20.sp,
-                            color = colorResource(
-                                id = R.color.Color_EE4266
-                            )
-                        ),
-                    )
-
-                    RowSizeProduct(onAddToCart = {
-                        scope.launch {
-                            viewModel.addToList(temp.copy(id = 1), viewModel.cartItems)
-                            snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
-                        }
-                    })
-                    RowSizeProduct(onAddToCart = {
-                        scope.launch {
-                            viewModel.addToList(temp.copy(id = 2), viewModel.cartItems)
-                            snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
-                        }
-                    })
-                    RowSizeProduct(onAddToCart = {
-                        scope.launch {
-                            viewModel.addToList(temp.copy(id = 3), viewModel.cartItems)
-                            snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
-                        }
-                    })
-                    RowSizeProduct(onAddToCart = {
-                        scope.launch {
-                            viewModel.addToList(temp.copy(id = 4), viewModel.cartItems)
-                            snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
-                        }
-                    })
-
-                    Row(
-                        modifier = Modifier
-                            .padding(vertical = 20.dp)
-                            .clickable { showDialog.value = true }
-                            .border(
-                                width = 1.dp, colorResource(
-                                    id = R.color.Color_120D26
-                                ), shape = RoundedCornerShape(4.dp)
-                            )
-                            .padding(vertical = 4.dp, horizontal = 8.dp),
-                    ) {
-                        Text(
-                            text = "Hướng dẫn chọn size",
-                            color = colorResource(id = R.color.Color_120D26),
-                            style = TextStyle(fontSize = 14.sp)
+                        ImageCustom(
+                            imageData = images[page],
+                            contentScale = ContentScale.FillHeight
                         )
                     }
-
-                    Text(
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        text = "Mô tả sản phẩm",
-                        style = TextStyle(
-                            fontWeight = FontWeight(600),
-                            fontSize = 20.sp,
-                            color = colorResource(
-                                id = R.color.Color_120D26
-                            )
-                        ),
-                    )
-
-                    RowDetail(detailStr = detail)
                 }
             }
+
+            Text(
+                text = "Áo Thun Cổ Tròn 3 Lỗ Sợi Nhân Tạo Thoáng Mát Trơn Dáng Vừa Thể Thao Beginner 03",
+                style = TextStyle(
+                    fontWeight = FontWeight(400),
+                    fontSize = 18.sp,
+                    color = colorResource(
+                        id = R.color.Color_120D26
+                    )
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 20.dp)
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Mã số: #00022873",
+                    style = TextStyle(
+                        fontWeight = FontWeight(400),
+                        fontSize = 16.sp,
+                        color = colorResource(
+                            id = R.color.Color_120D26
+                        )
+                    )
+                )
+
+                RatingRow()
+            }
+
+            Text(
+                modifier = Modifier.padding(vertical = 20.dp),
+                text = "287.000 đ",
+                style = TextStyle(
+                    fontWeight = FontWeight(600),
+                    fontSize = 20.sp,
+                    color = colorResource(
+                        id = R.color.Color_EE4266
+                    )
+                ),
+            )
+
+            RowSizeProduct {
+                scope.launch {
+                    viewModel.addToList(temp.copy(id = 1), viewModel.cartItems)
+                    snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
+                }
+            }
+            RowSizeProduct {
+                scope.launch {
+                    viewModel.addToList(temp.copy(id = 2), viewModel.cartItems)
+                    snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
+                }
+            }
+            RowSizeProduct {
+                scope.launch {
+                    viewModel.addToList(temp.copy(id = 3), viewModel.cartItems)
+                    snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
+                }
+            }
+            RowSizeProduct {
+                scope.launch {
+                    viewModel.addToList(temp.copy(id = 4), viewModel.cartItems)
+                    snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 20.dp)
+                    .clickable { showDialog.value = true }
+                    .border(
+                        width = 1.dp, colorResource(
+                            id = R.color.Color_120D26
+                        ), shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(vertical = 4.dp, horizontal = 8.dp),
+            ) {
+                Text(
+                    text = "Hướng dẫn chọn size",
+                    color = colorResource(id = R.color.Color_120D26),
+                    style = TextStyle(fontSize = 14.sp)
+                )
+            }
+
+            Text(
+                modifier = Modifier.padding(bottom = 10.dp),
+                text = "Mô tả sản phẩm",
+                style = TextStyle(
+                    fontWeight = FontWeight(600),
+                    fontSize = 20.sp,
+                    color = colorResource(
+                        id = R.color.Color_120D26
+                    )
+                ),
+            )
+
+            RowDetail(detailStr = detail)
         }
-    ) { it }
+    }
 }
 
 @Composable
