@@ -291,25 +291,25 @@ fun DetailProductScreen(
 
                     RowSizeProduct(onAddToCart = {
                         scope.launch {
-                            viewModel.addToCart(temp.copy(id = 1))
+                            viewModel.addToList(temp.copy(id = 1), viewModel.cartItems)
                             snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
                         }
                     })
                     RowSizeProduct(onAddToCart = {
                         scope.launch {
-                            viewModel.addToCart(temp.copy(id = 2))
+                            viewModel.addToList(temp.copy(id = 2), viewModel.cartItems)
                             snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
                         }
                     })
                     RowSizeProduct(onAddToCart = {
                         scope.launch {
-                            viewModel.addToCart(temp.copy(id = 3))
+                            viewModel.addToList(temp.copy(id = 3), viewModel.cartItems)
                             snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
                         }
                     })
                     RowSizeProduct(onAddToCart = {
                         scope.launch {
-                            viewModel.addToCart(temp.copy(id = 4))
+                            viewModel.addToList(temp.copy(id = 4), viewModel.cartItems)
                             snackbarHostState.showSnackbar("Thêm vào giỏ hàng thành công!!")
                         }
                     })

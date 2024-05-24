@@ -3,6 +3,7 @@ package com.lbtt2801.yamevn.viewmodels
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.lbtt2801.yamevn.models.ProductCart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,33 +22,37 @@ class MainViewModel : ViewModel() {
     }
 
     var cartItems = mutableStateListOf<ProductCart>()
-    fun addToCart(product: ProductCart) {
-        val itemIndex = cartItems.indexOfFirst { it.id == product.id }
+    var paymentItems = mutableStateListOf<ProductCart>()
+
+    fun addToList(product: ProductCart, list: MutableList<ProductCart>) {
+        val itemIndex = list.indexOfFirst { it.id == product.id }
 
         if (itemIndex != -1) {
-            val item = cartItems[itemIndex]
+            val item = list[itemIndex]
             val productCart = item.copy(quantity = item.quantity?.plus(1) ?: 1)
-            cartItems[itemIndex] = productCart
+            list[itemIndex] = productCart
         } else {
-            cartItems.add(product)
+            list.add(product)
         }
     }
 
-    fun removeFromCart(productId: Int) {
-        val productToRemove = cartItems.firstOrNull { it.id == productId }
+    fun removeFromList(productId: Int, list: MutableList<ProductCart>) {
+        val productToRemove = list.firstOrNull { it.id == productId }
         if (productToRemove != null) {
-            cartItems.remove(productToRemove)
+            list.remove(productToRemove)
         }
     }
 
-    fun updateQuantityItemCart(productId: Int, quantity: Int) {
-        val itemIndex = cartItems.indexOfFirst { it.id == productId }
+    fun updateQuantityItemList(list: MutableList<ProductCart>, productId: Int, quantity: Int) {
+        val itemIndex = list.indexOfFirst { it.id == productId }
         if (itemIndex != -1) {
-            val item = cartItems[itemIndex]
+            val item = list[itemIndex]
             val productCart = item.copy(quantity = quantity)
-            cartItems[itemIndex] = productCart
+            list[itemIndex] = productCart
         }
     }
 
-    var titleHeader: String = "Title Header"
+    var titleHeader = mutableStateListOf<String>("Title Header")
+    var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
 }

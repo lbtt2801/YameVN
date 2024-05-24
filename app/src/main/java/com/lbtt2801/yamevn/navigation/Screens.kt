@@ -11,4 +11,5 @@ sealed class Screens(val route: String) {
     object ChangePassword : Screens("change_password")
     object Cart : Screens("cart")
     object Category : Screens("category")
+    object Payment : Screens("payment")
 }

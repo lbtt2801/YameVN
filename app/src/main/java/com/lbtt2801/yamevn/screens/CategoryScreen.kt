@@ -24,11 +24,14 @@ fun CategoryScreen(navController: NavController, viewModel: MainViewModel) {
                     .padding(horizontal = 0.dp)
                     .zIndex(1f),
                 navController = navController,
-                title = viewModel.titleHeader,
+                title = viewModel.titleHeader.last(),
                 navIcon = R.drawable.ic_arrow_back,
                 profileIcon = null,
                 cartIcon = null,
-                onNavIconClicked = { navController.popBackStack() }
+                onNavIconClicked = {
+                    viewModel.titleHeader.removeAt(viewModel.titleHeader.lastIndex)
+                    navController.popBackStack()
+                }
             )
         },
         bottomBar = {

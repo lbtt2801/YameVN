@@ -54,7 +54,7 @@ fun CartItem(cartItem: ProductCart, viewModel: MainViewModel, onCheckedChange: (
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val handleConfirm = {
-        viewModel.removeFromCart(productId = cartItem.id ?: 1)
+        viewModel.removeFromList(productId = cartItem.id ?: 1, viewModel.cartItems)
     }
 
     val handleCancel = {
@@ -120,9 +120,9 @@ fun CartItem(cartItem: ProductCart, viewModel: MainViewModel, onCheckedChange: (
                     textFieldValue = value.take(2)
                     quantity = value.toIntOrNull() ?: 1
                     cartItem.id?.let {
-                        viewModel.updateQuantityItemCart(
-                            productId = it,
-                            quantity = quantity
+                        viewModel.updateQuantityItemList(
+                            list = viewModel.cartItems,
+                            productId = it, quantity = quantity
                         )
                     }
                 },
@@ -150,9 +150,9 @@ fun CartItem(cartItem: ProductCart, viewModel: MainViewModel, onCheckedChange: (
                         if (quantity > 1) {
                             quantity -= 1
                             cartItem.id?.let {
-                                viewModel.updateQuantityItemCart(
-                                    productId = it,
-                                    quantity = quantity
+                                viewModel.updateQuantityItemList(
+                                    list = viewModel.cartItems,
+                                    productId = it, quantity = quantity
                                 )
                             }
                         } else showDialog.value = true
@@ -167,9 +167,9 @@ fun CartItem(cartItem: ProductCart, viewModel: MainViewModel, onCheckedChange: (
                     IconButton(onClick = {
                         quantity += 1
                         cartItem.id?.let {
-                            viewModel.updateQuantityItemCart(
-                                productId = it,
-                                quantity = quantity
+                            viewModel.updateQuantityItemList(
+                                list = viewModel.cartItems,
+                                productId = it, quantity = quantity
                             )
                         }
                     }) {

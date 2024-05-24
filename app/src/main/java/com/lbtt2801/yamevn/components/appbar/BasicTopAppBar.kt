@@ -76,7 +76,7 @@ fun BasicTopAppBar(
         }
         Text(
             text = title,
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.padding(start = 45.dp).align(Alignment.CenterStart),
             style = TextStyle(
                 fontSize = 20.sp,
                 color = Color.White,

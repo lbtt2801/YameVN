@@ -1,5 +1,9 @@
 package com.lbtt2801.yamevn.screens
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -38,8 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.lbtt2801.yamevn.R
-import com.lbtt2801.yamevn.components.BottomSheet
 import com.lbtt2801.yamevn.components.ButtonSign
 import com.lbtt2801.yamevn.components.CustomTextStyle
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
@@ -47,17 +57,47 @@ import com.lbtt2801.yamevn.navigation.Screens
 import com.stevdzasan.onetap.GoogleUser
 import com.stevdzasan.onetap.rememberOneTapSignInState
 
+private fun handleSignInResult(
+    completedTask: Task<GoogleSignInAccount>,
+    onResult: (GoogleSignInAccount?) -> Unit
+) {
+    try {
+        val account = completedTask.getResult(ApiException::class.java)
+        onResult(account)
+    } catch (e: ApiException) {
+        Log.e("GoogleSignInScreen", "Sign in failed with exception: ${e.statusCode}")
+        onResult(null)
+    }
+}
 
 @Composable
-fun LoginScreen(navController: NavController) {
+//fun LoginScreen(navController: NavController, googleSignInClient: GoogleSignInClient)
+fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var save by rememberSaveable { mutableStateOf(false) }
 
-    val state = rememberOneTapSignInState()
-    var user: GoogleUser? by remember { mutableStateOf(null) }
+//    val state = rememberOneTapSignInState()
+//    var user: GoogleUser? by remember { mutableStateOf(null) }
+
+    var user by remember { mutableStateOf<GoogleSignInAccount?>(null) }
+    val context = LocalContext.current
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleSignInResult(task) {
+                user = it
+                user?.displayName?.let { it1 -> Log.e("GoogleSignInScreen", it1) }
+            }
+        } else {
+            Log.e("GoogleSignInScreen", "Sign in failed with resultCode: ${result.resultCode}")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -205,7 +245,11 @@ fun LoginScreen(navController: NavController) {
             )
 
             ButtonSign(
-                onClick = { },
+                onClick = {
+//                    val signInIntent = googleSignInClient.signInIntent
+//                    launcher.launch(signInIntent)
+                    onGoogleSignIn()
+                },
                 isButtonSign = false,
                 text = "Đăng nhập với Google",
                 color = Color.White,

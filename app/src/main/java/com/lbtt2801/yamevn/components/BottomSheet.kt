@@ -171,7 +171,7 @@ fun BottomSheet(
                             .padding(start = 15.dp, top = 10.dp, bottom = 0.dp)
                             .clickable {
                                 scope.launch {
-                                    viewModel?.titleHeader = item
+                                    viewModel?.titleHeader?.add(item)
                                     modalBottomSheetState.hide()
                                     navController.navigate(Screens.Category.route)
                                 }

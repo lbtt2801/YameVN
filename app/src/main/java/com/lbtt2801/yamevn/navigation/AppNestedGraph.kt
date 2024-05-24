@@ -8,6 +8,7 @@ import com.lbtt2801.yamevn.screens.CartScreen
 import com.lbtt2801.yamevn.screens.CategoryScreen
 import com.lbtt2801.yamevn.screens.DetailProductScreen
 import com.lbtt2801.yamevn.screens.HomeScreen
+import com.lbtt2801.yamevn.screens.PaymentScreen
 import com.lbtt2801.yamevn.screens.ProfileScreen
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
 import com.lbtt2801.yamevn.viewmodels.SearchViewModel
@@ -40,6 +41,9 @@ fun NavGraphBuilder.appGraph(
         }
         composable(route = Screens.Category.route) {
             CategoryScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(route = Screens.Payment.route) {
+            PaymentScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

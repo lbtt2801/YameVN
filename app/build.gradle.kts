@@ -85,10 +85,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Firebase
-    implementation("com.google.firebase:firebase-auth:21.1.0")
-    implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
-    implementation("com.google.android.gms:play-services-auth:20.4.1")
-    implementation("com.google.firebase:firebase-bom:22.0.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.5.0"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation ("com.google.firebase:firebase-auth:21.0.1")
+    implementation ("com.google.android.gms:play-services-auth:20.1.0")
+//    implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.6.0")

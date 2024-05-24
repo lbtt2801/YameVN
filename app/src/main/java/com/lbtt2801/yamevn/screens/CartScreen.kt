@@ -2,6 +2,7 @@ package com.lbtt2801.yamevn.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import com.lbtt2801.yamevn.components.CartItem
 import com.lbtt2801.yamevn.components.ImageCustom
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
 import com.lbtt2801.yamevn.models.ProductCart
+import com.lbtt2801.yamevn.navigation.Screens
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
 
 @Composable
@@ -146,7 +148,14 @@ fun CartScreen(navController: NavController, viewModel: MainViewModel) {
                             .background(Color.White)
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                selectedItems.forEach { selectedItem ->
+                                    viewModel.addToList(product = selectedItem, list = viewModel.paymentItems)
+                                }
+                                navController.navigate(Screens.Payment.route)
+                            },
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(

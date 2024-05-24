@@ -49,7 +49,13 @@ import com.stevdzasan.onetap.OneTapSignInWithGoogle
 import com.stevdzasan.onetap.getUserFromTokenId
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.lbtt2801.yamevn.navigation.Screens
+import com.lbtt2801.yamevn.screens.HomeScreen
 import com.lbtt2801.yamevn.screens.LoginScreen
 import com.lbtt2801.yamevn.screens.ProfileScreen
 import com.lbtt2801.yamevn.viewmodels.sign_in_google.SignInViewModel
@@ -58,46 +64,72 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val mainViewModel by viewModels<MainViewModel>()
     private val searchViewModel: SearchViewModel by viewModels()
+
+    private lateinit var googleSignInClient: GoogleSignInClient
+//    private lateinit var firebaseAuth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        installSplashScreen().apply {
-//            setKeepOnScreenCondition {
-//                !mainViewModel.isReady.value
-//            }
-//            setOnExitAnimationListener { screen ->
-//                val zoomX = ObjectAnimator.ofFloat(
-//                    screen.iconView,
-//                    View.SCALE_X,
-//                    0.5f,
-//                    0.0f
-//                )
-//                zoomX.interpolator = OvershootInterpolator()
-//                zoomX.duration = 500L
-//                zoomX.doOnEnd { screen.remove() }
+//        configureGoogleSignIn()
+//        setContent {
 //
-//                val zoomY = ObjectAnimator.ofFloat(
-//                    screen.iconView,
-//                    View.SCALE_Y,
-//                    0.5f,
-//                    0.0f
-//                )
-//                zoomY.interpolator = OvershootInterpolator()
-//                zoomY.duration = 500L
-//                zoomY.doOnEnd { screen.remove() }
-//
-//                zoomX.start()
-//                zoomY.start()
-//            }
 //        }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        mainViewModel.firebaseAuth = FirebaseAuth.getInstance()
+
+        val signInLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                if (task.isSuccessful) {
+                    val account = task.result
+                    account?.idToken?.let { firebaseAuthWithGoogle(it) }
+                }
+            }
+
         setContent {
+//            var isLoggedIn by remember { mutableStateOf(firebaseAuth.currentUser != null) }
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White),
             ) {
-                NavGraphComponent(searchViewModel = searchViewModel, viewModel = mainViewModel)
+                NavGraphComponent(
+                    searchViewModel = searchViewModel,
+                    viewModel = mainViewModel,
+                    onGoogleSignIn = { signInLauncher.launch(googleSignInClient.signInIntent) }
+                )
             }
         }
+
+    }
+
+    private fun configureGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        mainViewModel.firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    setContent {
+                        NavGraphComponent(
+                            searchViewModel = searchViewModel,
+                            viewModel = mainViewModel,
+                        )
+                    }
+                } else {
+                    // If sign in fails, display a message to the user.
+                }
+            }
     }
 }
