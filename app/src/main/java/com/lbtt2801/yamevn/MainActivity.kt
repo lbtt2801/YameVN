@@ -10,14 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.lbtt2801.yamevn.navigation.NavGraphComponent
+import com.lbtt2801.yamevn.navigation.Screens
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
 import com.lbtt2801.yamevn.viewmodels.SearchViewModel
+import com.lbtt2801.yamevn.viewmodels.user.UserViewModel
 
 class MainActivity : ComponentActivity() {
     companion object {
@@ -29,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth: FirebaseAuth
+
+    val userViewModel by viewModels<UserViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,19 @@ class MainActivity : ComponentActivity() {
                     account?.idToken?.let { token ->
                         mainViewModel.signIn(token)
                     }
+                    account?.let { acc ->
+                        acc.displayName?.let { name ->
+                            acc.email?.let { email ->
+                                userViewModel.registerUser(
+                                    name = name,
+                                    email = email,
+                                    address = "",
+                                    password = "",
+                                    phone = ""
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -65,7 +83,9 @@ class MainActivity : ComponentActivity() {
                     viewModel = mainViewModel,
                     onGoogleSignIn = {
                         signInLauncher.launch(googleSignInClient.signInIntent)
-                        navController.popBackStack()
+                        navController.navigate(Screens.Splash.route) {
+                            popUpTo(Screens.Splash.route) { inclusive = true }
+                        }
                     },
                     onLogout = {
                         mainViewModel.signOut()

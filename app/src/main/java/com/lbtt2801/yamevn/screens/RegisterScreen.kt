@@ -15,6 +15,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,13 +46,21 @@ import com.lbtt2801.yamevn.components.ButtonSign
 import com.lbtt2801.yamevn.components.CustomTextStyle
 import com.lbtt2801.yamevn.components.DropdownText
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
+import com.lbtt2801.yamevn.utils.Utils
+import com.lbtt2801.yamevn.viewmodels.products.ProductsViewModel
 import com.lbtt2801.yamevn.viewmodels.provinces.ProvinceListViewModel
 import com.lbtt2801.yamevn.viewmodels.provinces.models.ProvinceUIState
+import com.lbtt2801.yamevn.viewmodels.user.UserViewModel
+import com.lbtt2801.yamevn.viewmodels.user.models.UserUIState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
     val viewModel = viewModel<ProvinceListViewModel>()
     val provinceUIState by viewModel.provinceUIState.collectAsState()
+
+    val userViewModel = viewModel<UserViewModel>()
 
     val temp = ProvinceUIState(
         id = 0,
@@ -61,6 +72,7 @@ fun RegisterScreen(navController: NavController) {
     var selectedWard by remember { mutableStateOf(value = temp) }
 
     var name by rememberSaveable { mutableStateOf(value = "") }
+    var phone by rememberSaveable { mutableStateOf(value = "") }
     var email by rememberSaveable { mutableStateOf(value = "") }
     var password by rememberSaveable { mutableStateOf(value = "") }
     var repass by rememberSaveable { mutableStateOf(value = "") }
@@ -89,7 +101,11 @@ fun RegisterScreen(navController: NavController) {
     val districtList = provinceUIState.districtList
     val wardList = provinceUIState.wardList
 
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             BasicTopAppBar(
                 modifier = Modifier
@@ -111,7 +127,7 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
-                .padding(top = 65.dp, start = 12.dp, end = 12.dp),
+                .padding(all = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
@@ -141,6 +157,41 @@ fun RegisterScreen(navController: NavController) {
                         contentDescription = "Icon Delete",
                         tint = Color.Black.copy(alpha = 0.5f),
                         modifier = Modifier.clickable { name = "" }
+                    )
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Black,
+                    cursorColor = Color.Black
+                ),
+            )
+
+            OutlinedTextField(
+                isError = isButtonClicked && phone.isEmpty(),
+                modifier = Modifier.fillMaxWidth(),
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Số điện thoại") },
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = "032XXXXXX",
+                        style = CustomTextStyle.placeholderStyle
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_phone),
+                        contentDescription = "Icon Mail",
+                        tint = Color.Black.copy(alpha = 0.5f)
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = "Icon Delete",
+                        tint = Color.Black.copy(alpha = 0.5f),
+                        modifier = Modifier.clickable { phone = "" }
                     )
                 },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -220,7 +271,7 @@ fun RegisterScreen(navController: NavController) {
             )
 
             OutlinedTextField(
-                isError = isButtonClicked && repass.isEmpty(),
+                isError = isButtonClicked && Utils.checkSamePassword(password, repass),
                 modifier = Modifier.fillMaxWidth(),
                 value = repass,
                 onValueChange = { repass = it },
@@ -312,7 +363,24 @@ fun RegisterScreen(navController: NavController) {
                 ),
             )
 
-            ButtonSign(onClick = { isButtonClicked = true }, text = "Đăng kí")
+            ButtonSign(text = "Đăng kí", onClick = {
+                isButtonClicked = true
+                if (name.isNotEmpty() && phone.isNotEmpty() && email.isNotEmpty() && address.isNotEmpty()
+                    && Utils.checkSamePassword(password, repass)
+                    && selectedCity.id != 0 && selectedDistrict.id != 0 && selectedWard.id != 0
+                ) {
+                    val diachi =
+                        "$address, ${selectedWard.name}, ${selectedDistrict.name}, ${selectedCity.name}"
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Đăng kí tài khoản thành công!!")
+                        userViewModel.registerUser(name, diachi, phone, email, password)
+                        delay(500)
+                        navController.popBackStack()
+                    }
+                } else scope.launch {
+                    snackbarHostState.showSnackbar("Đăng kí tài khoản Thất bại!!")
+                }
+            })
 
             Text(
                 text = "HOẶC",
@@ -323,7 +391,7 @@ fun RegisterScreen(navController: NavController) {
             )
 
             ButtonSign(
-                onClick = {},
+                onClick = { onGoogleSignIn() },
                 isButtonSign = false,
                 text = "Đăng nhập với Google",
                 color = Color.White,

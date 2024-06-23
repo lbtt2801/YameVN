@@ -21,18 +21,28 @@ fun InforAddress(
     user: String = "Tấn Trưởng | 0328467924",
     address: String = "Số 87, Nguyễn Thế Truyện, Phường Tân Sơn Nhì, Quận Tân Phú, TP. Hồ Chí Minh"
 ) {
+    val hasPhuong = address.contains("Phường", ignoreCase = true)
     val parts = address.split(Regex("(?i)\\bphường\\b|\\bxã\\b"))
 
-    val firstPart = parts[0].trim()
-    val secondPart = parts[1].trim()
+    var firstPart = address
+    var secondPart = address
+
+    if (address.length > 10) {
+        firstPart = parts[0].trim()
+        secondPart = (if (hasPhuong) "Phường " else "Xã ") + parts[1].trim()
+    }
 
     Row(
-        modifier = Modifier.fillMaxWidth().padding(all = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier= Modifier.align(Top).padding(end = 10.dp),
+            modifier = Modifier
+                .align(Top)
+                .padding(end = 10.dp),
             painter = painterResource(id = R.drawable.ic_dia_chi),
             tint = Color.Red,
             contentDescription = "ic_dia_chi"

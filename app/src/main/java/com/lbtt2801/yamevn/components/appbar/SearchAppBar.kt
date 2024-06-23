@@ -2,6 +2,7 @@ package com.lbtt2801.yamevn.components.appbar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,7 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -41,7 +47,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.lbtt2801.yamevn.components.IconTextButton
 import com.lbtt2801.yamevn.components.ImageCustom
+import com.lbtt2801.yamevn.utils.Utils
+import com.lbtt2801.yamevn.viewmodels.products.ProductsViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -52,8 +63,18 @@ fun SearchAppBar(
     onTextChange: (String) -> Unit,
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit,
+    navController: NavController,
 ) {
     val controller = LocalSoftwareKeyboardController.current
+    val productsViewModel = viewModel<ProductsViewModel>()
+    val productUIState by productsViewModel.productUIState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        if (productUIState.products.size < 3)
+            productsViewModel.getAllSanPham()
+    }
+    val products = productUIState.products
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -125,9 +146,25 @@ fun SearchAppBar(
                     .background(Color.White)
             ) {
                 LazyColumn {
-                    items(3) { item ->
-                        ResultItem(isSale = true)
-                        ResultItem()
+                    val searchResults = products.filter { product ->
+                        product.name.contains(
+                            text,
+                            ignoreCase = true
+                        ) || product.id.toString().contains(text, ignoreCase = true)
+                    }
+                    items(searchResults) { product ->
+                        ProductItem(
+                            isSearch = true,
+                            isSale = product.idPromotion > 0,
+                            imageRes = product.thumbnail,
+                            productName = product.name,
+                            salePrice = product.price,
+                            originalPrice = product.initialPrice,
+                            onClick = {
+                                onCloseClicked()
+                                navController.navigate("detail_product/${product.id}")
+                            }
+                        )
                     }
                 }
             }
@@ -137,15 +174,19 @@ fun SearchAppBar(
 }
 
 @Composable
-fun ResultItem(
+fun ProductItem(
     imageRes: String = "https://cdn2.yame.vn/pimg/ao-so-mi-vai-kaki-nhung-mem-min-mien-gio-cat-0022739/bf65114d-07b2-2b00-6814-001aff3ea07b.jpg?w=800",
     productName: String = "Sản phẩm 01",
     isSale: Boolean = false,
-    salePrice: Double = 120.9,
-    originalPrice: Double = 500.0
+    isSearch: Boolean = false,
+    salePrice: Double = 120.0,
+    originalPrice: Double = 500.0,
+    onClickIcon: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
+            .clickable { onClick() }
             .fillMaxWidth()
             .padding(vertical = 10.dp, horizontal = 16.dp)
             .border(
@@ -163,7 +204,11 @@ fun ResultItem(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        Column(modifier = Modifier.padding(top = 15.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(top = 15.dp)
+                .fillMaxWidth()
+        ) {
             Text(
                 text = productName,
                 style = TextStyle(fontWeight = FontWeight.Bold),
@@ -176,21 +221,24 @@ fun ResultItem(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (isSale) {
                     Text(
-                        text = "${
-                            BigDecimal(salePrice).setScale(1, RoundingMode.HALF_UP).toDouble()
-                        }00đ",
+//                        text = "${
+//                            BigDecimal(salePrice).setScale(1, RoundingMode.HALF_UP).toDouble()
+//                        }00đ",
+                        text = Utils.formattedAmount(salePrice.toInt()),
                         style = TextStyle(fontWeight = FontWeight.Bold, color = Color.Red),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
                 Text(
-                    text = "${
-                        BigDecimal(originalPrice).setScale(1, RoundingMode.HALF_UP).toDouble()
-                    }00đ",
+                    text = Utils.formattedAmount(originalPrice.toInt()),
                     style = TextStyle(fontWeight = FontWeight.Bold),
                     textDecoration = if (isSale) TextDecoration.LineThrough else TextDecoration.None
                 )
+            }
+
+            if (isSearch.not()) {
+                IconTextButton(modifier = Modifier.align(End), onClick = { onClickIcon() })
             }
         }
     }

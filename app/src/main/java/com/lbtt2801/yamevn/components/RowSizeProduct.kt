@@ -44,8 +44,9 @@ fun RowSizeProduct(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "$color, $size", style = textStyle)
+        Text(modifier = Modifier.weight(1f), text = "$color, $size", style = textStyle)
         Text(
+            modifier = Modifier.weight(1f),
             text = "Còn: $quantity",
             style = textStyle.copy(
                 fontWeight = FontWeight.Bold,

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -76,12 +77,13 @@ fun BasicTopAppBar(
         }
         Text(
             text = title,
-            modifier = Modifier.padding(start = 45.dp).align(Alignment.CenterStart),
+            modifier = Modifier.padding(start = 45.dp).align(Alignment.CenterStart).fillMaxWidth(0.8f),
             style = TextStyle(
                 fontSize = 20.sp,
                 color = Color.White,
-                textAlign = TextAlign.Center
-            )
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Row(

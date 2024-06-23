@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,10 +33,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
 import com.lbtt2801.yamevn.navigation.Screens
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
+import com.lbtt2801.yamevn.viewmodels.categories.CategoriesViewModel
+import com.lbtt2801.yamevn.viewmodels.collections.CollectionsViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -48,8 +53,6 @@ fun BottomSheet(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
     val scope = rememberCoroutineScope()
-    val products = listOf("Product 1", "Product 2", "Product 3", "Product 4")
-    val collections = listOf("Collection 1", "Collection 2", "Collection 3")
 
     val selectTabOne = remember { mutableStateOf(false) }
     val selectTabTwo = remember { mutableStateOf(false) }
@@ -71,6 +74,20 @@ fun BottomSheet(
             selectTabTwo.value = false
         }
     }
+
+    val collectionsViewModel = viewModel<CollectionsViewModel>()
+    val collectionUIState by collectionsViewModel.collectionUIState.collectAsState()
+
+    val categoriesViewModel = viewModel<CategoriesViewModel>()
+    val categoryUIState by categoriesViewModel.categoryUIState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        collectionsViewModel.getCollectionsAPI()
+        categoriesViewModel.getCategoriesAPI()
+    }
+
+    val categories = categoryUIState.categories
+    val collections = collectionUIState.collections
 
     ModalBottomSheetLayout(
         modifier = Modifier
@@ -163,21 +180,38 @@ fun BottomSheet(
                     .background(colorResource(id = R.color.Color_222))
 
             ) {
-                items(if (selectTabOne.value) collections else products) { item ->
-                    Text(
-                        text = item.uppercase(),
-                        style = contentStyle,
-                        modifier = Modifier
-                            .padding(start = 15.dp, top = 10.dp, bottom = 0.dp)
-                            .clickable {
-                                scope.launch {
-                                    viewModel?.titleHeader?.add(item)
-                                    modalBottomSheetState.hide()
-                                    navController.navigate(Screens.Category.route)
+                if (selectTabOne.value)
+                    items(items = collections) { item ->
+                        Text(
+                            text = item.name.uppercase(),
+                            style = contentStyle,
+                            modifier = Modifier
+                                .padding(start = 15.dp, top = 10.dp, bottom = 0.dp)
+                                .clickable {
+                                    scope.launch {
+                                        viewModel?.titleHeader?.add(item.name)
+                                        modalBottomSheetState.hide()
+                                        navController.navigate("category/1/${item.id}")
+                                    }
                                 }
-                            }
-                    )
-                }
+                        )
+                    }
+                else
+                    items(items = categories) { item ->
+                        Text(
+                            text = item.name.uppercase(),
+                            style = contentStyle,
+                            modifier = Modifier
+                                .padding(start = 15.dp, top = 10.dp, bottom = 0.dp)
+                                .clickable {
+                                    scope.launch {
+                                        viewModel?.titleHeader?.add(item.name)
+                                        modalBottomSheetState.hide()
+                                        navController.navigate("category/2/${item.id}")
+                                    }
+                                }
+                        )
+                    }
             }
         },
     ) {

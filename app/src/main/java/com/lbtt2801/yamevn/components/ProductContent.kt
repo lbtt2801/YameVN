@@ -30,25 +30,34 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
 import com.lbtt2801.yamevn.navigation.Screens
+import com.lbtt2801.yamevn.viewmodels.MainViewModel
 
 @Composable
 fun ProductContent(
     navController: NavController,
-//    id: Int? = null,
-    image: String = "https://firebasestorage.googleapis.com/v0/b/dacsanvietnam-6ee19.appspot.com/o/khong-hien-thi.png?alt=media&token=1f60e24e-735b-4e3b-bb86-f28db5c639f6",
+    id: Int = 39,
+    image: String = "https://firebasestorage.googleapis.com/v0/b/yamevn-1a052.appspot.com/o/khong-hien-thi.png?alt=media&token=55bba969-3b4b-4e4a-b493-cabd1f481b34",
+    initialPrice: Int = 0,
     price: Int = 0,
-    priceSale: Int = 0,
     name: String = "Áo Sơ Mi Cổ Bẻ Tay Ngắn Vải Cotton Thấm Hút Phối Màu Dáng Rộng Đơn Giản PREMIUM 56",
-    isSale: Boolean = true,
+    isSale: Boolean = false,
     sale: String = "30 %"
 ) {
+    val formattedInitialPrice = (initialPrice / 1000).toString()
+    val formattedPrice = (price / 1000).toString()
     Column(
         modifier = Modifier
             .border(width = 1.dp, color = Color.LightGray, shape = RoundedCornerShape(size = 12.dp))
             .fillMaxSize()
-            .clickable { navController.navigate(Screens.DetailProduct.route) }
+            .clickable {
+                navController.navigate("detail_product/$id")
+            }
     ) {
-        Box(modifier = Modifier.background(colorResource(id = R.color.Color_F3F3F3))) {
+        Box(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(topEnd = 12.dp, topStart = 12.dp))
+                .background(colorResource(id = R.color.Color_F3F3F3))
+        ) {
             if (isSale) {
                 BlinkingText(
                     text = "- $sale", modifier = Modifier
@@ -90,20 +99,20 @@ fun ProductContent(
                     text = "Giá:  ",
                     style = TextStyle(fontWeight = FontWeight.Bold),
                 )
-                Text(
-                    text = price.toString(),
-                    style = TextStyle(
-                        textDecoration = TextDecoration.LineThrough,
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
-                if (priceSale > 0) {
-                    Spacer(modifier = Modifier.width(10.dp))
+                if (initialPrice > price) {
                     Text(
-                        text = priceSale.toString(),
-                        style = TextStyle(color = Color.Red, fontWeight = FontWeight.Bold)
+                        text = formattedInitialPrice,
+                        style = TextStyle(
+                            textDecoration = TextDecoration.LineThrough,
+                            fontWeight = FontWeight.Bold
+                        ),
                     )
+                    Spacer(modifier = Modifier.width(10.dp))
                 }
+                Text(
+                    text = formattedPrice,
+                    style = TextStyle(color = Color.Red, fontWeight = FontWeight.Bold)
+                )
             }
         }
     }

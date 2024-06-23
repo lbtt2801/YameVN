@@ -1,5 +1,6 @@
 package com.lbtt2801.yamevn.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,10 +18,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,22 +42,39 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.lbtt2801.yamevn.R
 import com.lbtt2801.yamevn.components.ButtonSign
 import com.lbtt2801.yamevn.components.CustomTextStyle
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
+import com.lbtt2801.yamevn.helpers.FetchingStatus
 import com.lbtt2801.yamevn.navigation.Screens
+import com.lbtt2801.yamevn.viewmodels.MainViewModel
+import com.lbtt2801.yamevn.viewmodels.user.UserViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
+fun LoginScreen(
+    viewModel: MainViewModel,
+    navController: NavController,
+    onGoogleSignIn: () -> Unit
+) {
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     var save by rememberSaveable { mutableStateOf(false) }
 
+    val userViewModel = viewModel<UserViewModel>()
+    val userUIState by userViewModel.userUIState.collectAsState()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             BasicTopAppBar(
                 modifier = Modifier
@@ -186,7 +209,24 @@ fun LoginScreen(navController: NavController, onGoogleSignIn: () -> Unit) {
                 )
             }
 
-            ButtonSign(onClick = { navController.navigate(Screens.Profile.route) })
+            ButtonSign(onClick = {
+                scope.launch {
+                    userViewModel.loginUser(email = email, password = password)
+                    delay(200)
+                }
+                if (userUIState.fetchingStatus == FetchingStatus.SUCCESS) {
+                    if (userUIState.users.isNotEmpty())
+                        scope.launch {
+                            viewModel.emailLogin.value = email
+                            snackbarHostState.showSnackbar("Đăng nhâp thành công!!")
+                            Log.d("viewModel.emailLogin.value", viewModel.emailLogin.value)
+                            navController.navigate(Screens.Splash.route) {
+                                popUpTo(Screens.Splash.route) { inclusive = true }
+                            }
+                        }
+                    else scope.launch { snackbarHostState.showSnackbar("Vui lòng kiểm tra Tài khoản hoặc Mật khẩu!!") }
+                }
+            })
 
             Text(
                 text = "HOẶC",

@@ -38,6 +38,7 @@ import com.lbtt2801.yamevn.components.ImageCustom
 import com.lbtt2801.yamevn.components.appbar.BasicTopAppBar
 import com.lbtt2801.yamevn.models.ProductCart
 import com.lbtt2801.yamevn.navigation.Screens
+import com.lbtt2801.yamevn.utils.Utils
 import com.lbtt2801.yamevn.viewmodels.MainViewModel
 
 @Composable
@@ -130,7 +131,7 @@ fun CartScreen(navController: NavController, viewModel: MainViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     val totalPrice: Int = selectedItems.fold(0) { acc, product ->
-                        val productPrice = product.price ?: 0
+                        val productPrice = product.salePrice ?: 0
                         val productQuantity = product.quantity ?: 0
                         acc + (productPrice * productQuantity)
                     }
@@ -138,7 +139,7 @@ fun CartScreen(navController: NavController, viewModel: MainViewModel) {
                         text = buildAnnotatedString {
                             append("\n Tổng thanh toán: \n")
                             withStyle(SpanStyle(color = colorResource(id = R.color.Color_EE4266))) {
-                                append("\t\t $totalPrice.000đ")
+                                append("\t\t ${Utils.formattedAmount(totalPrice)}")
                             }
                         },
                         style = TextStyle(fontSize = 16.sp, textAlign = TextAlign.Center),
